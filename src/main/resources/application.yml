@@ -1,0 +1,11 @@
+spring:
+  application:
+    name: roadservice
+  data:
+    mongodb:
+      authentication-database: admin
+      username: mongoadmin
+      password: secret
+      database: admin
+      port: 27017
+      host: localhost
