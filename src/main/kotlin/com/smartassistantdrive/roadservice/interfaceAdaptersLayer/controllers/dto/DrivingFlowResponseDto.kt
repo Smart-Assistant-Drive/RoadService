@@ -13,7 +13,7 @@ class DrivingFlowResponseDto @JsonCreator constructor(
 	/**
 	 *
 	 */
-	@param:JsonProperty("roadId") val flowId: String,
+	@param:JsonProperty("flowId") val flowId: String,
 
 	/**
 	 *
@@ -23,17 +23,17 @@ class DrivingFlowResponseDto @JsonCreator constructor(
 	/**
 	 *
 	 */
-	@param:JsonProperty("roadId") val direction: Int,
+	@param:JsonProperty("direction") val direction: Int,
 
 	/**
 	 *
 	 */
-	@param:JsonProperty("roadId") val numOfLanes: Int,
+	@param:JsonProperty("numOfLanes") val numOfLanes: Int,
 
 	/**
 	 *
 	 */
-	@param:JsonProperty("roadId") val coordinates: ArrayList<Pair<Int, Int>>,
+	@param:JsonProperty("coordinates") val coordinates: ArrayList<Pair<Int, Int>>,
 
 ) : RepresentationModel<DrivingFlowResponseDto>()
 

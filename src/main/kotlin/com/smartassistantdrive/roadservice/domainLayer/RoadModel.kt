@@ -31,6 +31,21 @@ interface RoadModel {
 	val roadway: ArrayList<DrivingFlow>
 
 	/**
+	 *
+	 */
+	val junctionA: JunctionModel?
+
+	/**
+	 *
+	 */
+	val junctionB: JunctionModel?
+
+	/**
+	 *
+	 */
+	val junctions: ArrayList<JunctionModel>
+
+	/**
 	 * Companion object for Road construction.
 	 */
 	companion object {
@@ -42,7 +57,10 @@ interface RoadModel {
 			roadNumber: String,
 			roadName: String,
 			category: TechnicalCategory,
+			junctionA: JunctionModel? = null,
+			junctionB: JunctionModel? = null,
 			roadway: ArrayList<DrivingFlow> = ArrayList(),
+			junctions: ArrayList<JunctionModel> = ArrayList(),
 		): RoadModel {
 			return object : RoadModel {
 				override val roadId: String
@@ -55,9 +73,19 @@ interface RoadModel {
 					get() = category
 				override val roadway: ArrayList<DrivingFlow>
 					get() = roadway
+				override val junctionA: JunctionModel?
+					get() = junctionA
+				override val junctionB: JunctionModel?
+					get() = junctionB
+				override val junctions: ArrayList<JunctionModel>
+					get() = junctions
 
 				fun addDrivingFlow(drivingFlow: DrivingFlow) {
 					roadway.add(drivingFlow)
+				}
+
+				fun addJunction(junction: JunctionModel) {
+					junctions.add(junction)
 				}
 			}
 		}

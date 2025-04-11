@@ -33,4 +33,9 @@ interface RoadDataSourceGateway {
 	 *
 	 */
 	fun getRoadById(roadId: String): Result<RoadResponseModel>
+
+	/**
+	 *
+	 */
+	fun addJunctionToRoad(roadId: String, junctionId: String): Result<RoadResponseModel>
 }

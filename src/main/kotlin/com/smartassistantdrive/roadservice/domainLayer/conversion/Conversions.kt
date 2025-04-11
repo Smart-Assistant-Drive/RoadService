@@ -23,3 +23,15 @@ fun RoadRequestModel.toRoadModel(): RoadModel {
 fun RoadResponseModel.toRoadModel(): RoadModel {
 	return RoadModel.create(roadId, roadNumber, roadName, TechnicalCategory.entries[category])
 }
+
+/**
+ *
+ */
+fun RoadModel.toRoadResponse(): RoadResponseModel {
+	return RoadResponseModel(
+		roadId,
+		roadNumber,
+		roadName,
+		category.ordinal
+	)
+}

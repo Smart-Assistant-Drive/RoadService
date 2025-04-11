@@ -1,5 +1,7 @@
 package com.smartassistantdrive.roadservice.domainLayer
 
+import com.smartassistantdrive.roadservice.businessLayer.adapter.Coordinate
+
 /**
  * Model of a specific junction between roads.
  */
@@ -8,7 +10,7 @@ interface JunctionModel {
 	/**
 	 * Id of the junction.
 	 */
-	val junctionId: Int
+	val junctionId: String
 
 	/**
 	 * The outgoing roads of the junction: a car in a specific flow should
@@ -22,6 +24,11 @@ interface JunctionModel {
 	val junctionType: JunctionType
 
 	/**
+	 *
+	 */
+	val position: Pair<Coordinate, Coordinate>
+
+	/**
 	 * Companion object for Junction construction.
 	 */
 	companion object {
@@ -29,17 +36,20 @@ interface JunctionModel {
 		 * Construction method.
 		 */
 		fun create(
-			junctionId: Int,
+			junctionId: String,
 			outgoingRoads: ArrayList<RoadModel>,
 			junctionType: JunctionType,
+			position: Pair<Coordinate, Coordinate>,
 		): JunctionModel {
 			return object : JunctionModel {
-				override val junctionId: Int
+				override val junctionId: String
 					get() = junctionId
 				override val outgoingRoads: ArrayList<RoadModel>
 					get() = outgoingRoads
 				override val junctionType: JunctionType
 					get() = junctionType
+				override val position: Pair<Coordinate, Coordinate>
+					get() = position
 			}
 		}
 	}

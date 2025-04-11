@@ -37,7 +37,7 @@ class DrivingFlowDataSourceModel(
 	/**
 	 *
 	 */
-	var roadCoordinates: ArrayList<Pair<Int, Int>>? = roadCoordinates
+	val roadCoordinates: ArrayList<Pair<Int, Int>>? = roadCoordinates
 
 	constructor(
 		idObj: ObjectId,

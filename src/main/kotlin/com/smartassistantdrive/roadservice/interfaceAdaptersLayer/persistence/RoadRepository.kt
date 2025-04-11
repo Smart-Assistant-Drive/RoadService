@@ -18,4 +18,9 @@ interface RoadRepository : MongoRepository<RoadDataSourceModel?, String?> {
 	 *
 	 */
 	fun findByRoadNumber(roadNumber: String?): List<RoadDataSourceModel>
+
+	/**
+	 *
+	 */
+	fun removeByRoadId(roadId: ObjectId?)
 }

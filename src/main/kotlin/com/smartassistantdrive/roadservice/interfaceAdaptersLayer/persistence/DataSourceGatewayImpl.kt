@@ -2,13 +2,18 @@ package com.smartassistantdrive.roadservice.interfaceAdaptersLayer.persistence
 
 import com.smartassistantdrive.roadservice.businessLayer.adapter.DrivingFlowRequestModel
 import com.smartassistantdrive.roadservice.businessLayer.adapter.DrivingFlowResponseModel
+import com.smartassistantdrive.roadservice.businessLayer.adapter.DrivingFlowUpdateModel
+import com.smartassistantdrive.roadservice.businessLayer.adapter.JunctionRequestModel
+import com.smartassistantdrive.roadservice.businessLayer.adapter.JunctionResponseModel
 import com.smartassistantdrive.roadservice.businessLayer.adapter.RoadRequestModel
 import com.smartassistantdrive.roadservice.businessLayer.adapter.RoadResponseModel
 import com.smartassistantdrive.roadservice.businessLayer.adapter.RoadUpdateModel
 import com.smartassistantdrive.roadservice.businessLayer.boundaries.DataSourceGateway
+import com.smartassistantdrive.roadservice.businessLayer.exception.DrivingFlowNotFountException
 import com.smartassistantdrive.roadservice.businessLayer.exception.RoadNotFoundException
+import com.smartassistantdrive.roadservice.interfaceAdaptersLayer.persistence.conversion.toDataSourceModel
+import com.smartassistantdrive.roadservice.interfaceAdaptersLayer.persistence.conversion.toResponseModel
 import com.smartassistantdrive.roadservice.interfaceAdaptersLayer.persistence.entity.DrivingFlowDataSourceModel
-import com.smartassistantdrive.roadservice.interfaceAdaptersLayer.persistence.entity.RoadDataSourceModel
 import java.util.stream.Collectors
 import kotlin.jvm.optionals.getOrNull
 import org.bson.types.ObjectId
@@ -22,42 +27,59 @@ import org.slf4j.LoggerFactory
 class DataSourceGatewayImpl(
 	private val roadRepository: RoadRepository,
 	private val drivingFlowRepository: DrivingFlowRepository,
+	private val junctionRepository: JunctionRepository,
 ) : DataSourceGateway {
 
-	private var logger: Logger = LoggerFactory.getLogger(DataSourceGatewayImpl::class.java)
+	private val logger: Logger = LoggerFactory.getLogger(DataSourceGatewayImpl::class.java)
 
 	override fun addRoad(roadRequestModel: RoadRequestModel): Result<RoadResponseModel> {
-		val roadDataSourceModel =
-			RoadDataSourceModel(roadRequestModel.roadNumber, roadRequestModel.roadName, roadRequestModel.category)
+		val roadDataSourceModel = roadRequestModel.toDataSourceModel()
 		val result = roadRepository.save(roadDataSourceModel)
 		val id = result.roadId.toString()
 		logger.info("Saved new road $id")
-		return Result.success(RoadResponseModel(id, result.roadNumber!!, result.roadName!!, result.category!!))
+		return Result.success(result.toResponseModel())
 	}
 
 	override fun updateRoad(roadId: String, roadUpdateModel: RoadUpdateModel): Result<RoadResponseModel> {
-		TODO("Not yet implemented")
+		val roadToUpdate = roadRepository.findByRoadId(ObjectId(roadId)).first()
+		roadToUpdate.roadName = roadUpdateModel.roadName
+		roadToUpdate.roadNumber = roadUpdateModel.roadNumber
+		roadToUpdate.category = roadUpdateModel.category
+		val result = roadRepository.save(roadToUpdate)
+		return Result.success(result.toResponseModel())
 	}
 
 	override fun removeRoad(roadId: String) {
-		TODO("Not yet implemented")
+		roadRepository.removeByRoadId(ObjectId(roadId))
 	}
 
 	override fun getAllRoadsByNumber(roadNumber: String): List<RoadResponseModel> {
 		val result = roadRepository.findByRoadNumber(roadNumber)
-		return result.stream().map { i ->
-			RoadResponseModel(i.roadId.toString(), i.roadNumber!!, i.roadName!!, i.category!!)
+		return result.stream().map {
+			it.toResponseModel()
 		}.collect(Collectors.toList())
 	}
 
 	override fun getRoadById(roadId: String): Result<RoadResponseModel> {
 		val list = roadRepository.findByRoadId(ObjectId(roadId))
-		list.stream().map { i ->
-			RoadResponseModel(i.roadId.toString(), i.roadNumber!!, i.roadName!!, i.category!!)
+		list.stream().map {
+			it.toResponseModel()
 		}.findFirst().getOrNull()?.let {
 			return Result.success(it)
 		}
 		return Result.failure(RoadNotFoundException())
+	}
+
+	override fun addJunctionToRoad(roadId: String, junctionId: String): Result<RoadResponseModel> {
+		val roads = roadRepository.findByRoadId(ObjectId(roadId))
+		if (roads.isNotEmpty()) {
+			val road = roads.first()
+			road.junctions.addLast(junctionId)
+			roadRepository.save(road)
+			return Result.success(road.toResponseModel())
+		} else {
+			return Result.failure(RoadNotFoundException())
+		}
 	}
 
 	override fun addDrivingFlow(drivingFlowRequestModel: DrivingFlowRequestModel): Result<String> {
@@ -82,16 +104,31 @@ class DataSourceGatewayImpl(
 	override fun getDrivingFlow(flowId: String): Result<DrivingFlowResponseModel> {
 		val list = drivingFlowRepository.findById(ObjectId(flowId))
 		list.stream().map {
-			DrivingFlowResponseModel(
-				it.id.toString(),
-				it.roadId!!,
-				it.idDirection!!,
-				it.numOfLanes!!,
-				it.roadCoordinates!!
-			)
+			it.toResponseModel()
 		}.findFirst().getOrNull()?.let {
 			return Result.success(it)
 		}
 		return Result.failure(RoadNotFoundException())
+	}
+
+	override fun getAllDrivingFlowsByRoad(roadId: String): List<DrivingFlowResponseModel> {
+		return drivingFlowRepository.findAllByRoadId(roadId).map {
+			it.toResponseModel()
+		}
+	}
+
+	override fun updateDrivingFlow(drivingFlowUpdateModel: DrivingFlowUpdateModel): Result<DrivingFlowResponseModel> {
+		val result = getDrivingFlow(drivingFlowUpdateModel.flowId)
+		if (result.isSuccess) {
+			val newFlow = drivingFlowRepository.save(result.getOrNull()!!.toDataSourceModel())
+			return Result.success(newFlow.toResponseModel())
+		} else {
+			return Result.failure(DrivingFlowNotFountException())
+		}
+	}
+
+	override fun addJunction(junctionRequestModel: JunctionRequestModel): Result<JunctionResponseModel> {
+		val junction = junctionRepository.save(junctionRequestModel.toDataSourceModel())
+		return Result.success(junction.toResponseModel())
 	}
 }

@@ -3,21 +3,16 @@ package com.smartassistantdrive.roadservice.businessLayer.adapter
 /**
  *
  */
-data class JunctionRequestModel(
+data class JunctionUpdateModel(
 
 	/**
 	 * The outgoing roads of the junction: a car in a specific flow should
 	 * follow the same direction flow of the outgoing road (specified with the id direction).
 	 */
-	val outgoingRoads: ArrayList<String>,
+	val newOutgoingRoads: ArrayList<String>,
 
 	/**
 	 *
 	 */
-	val junctionType: Int,
-
-	/**
-	 *
-	 */
-	val position: Pair<Coordinate, Coordinate>,
+	val newJunctionType: Int,
 )
