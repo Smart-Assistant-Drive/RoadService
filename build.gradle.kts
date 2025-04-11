@@ -68,6 +68,12 @@ configurations.matching { it.name == "detekt" }.all {
 	}
 }
 
+// build.gradle.kts (for Gradle Kotlin DSL)
+detekt {
+	config = files("detekt.yml") // Explicitly point to the root detekt.yml
+	// ... other Detekt configurations
+}
+
 tasks.jar {
 	manifest {
 		attributes(
