@@ -89,5 +89,18 @@ interface RoadModel {
 				}
 			}
 		}
+
+		fun RoadModel.copy(
+			roadId: String = this.roadId,
+			roadNumber: String = this.roadNumber,
+			roadName: String = this.roadName,
+			category: TechnicalCategory = this.category,
+			junctionA: JunctionModel? = this.junctionA,
+			junctionB: JunctionModel? = this.junctionB,
+			roadway: ArrayList<DrivingFlow> = this.roadway,
+			junctions: ArrayList<JunctionModel> = this.junctions,
+		): RoadModel {
+			return create(roadId, roadNumber, roadName, category, junctionA, junctionB, roadway, junctions)
+		}
 	}
 }
