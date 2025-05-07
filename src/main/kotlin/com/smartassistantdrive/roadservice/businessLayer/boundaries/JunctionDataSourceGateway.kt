@@ -12,4 +12,14 @@ interface JunctionDataSourceGateway {
 	 *
 	 */
 	fun addJunction(junctionRequestModel: JunctionRequestModel): Result<JunctionResponseModel>
+
+	/**
+	 *
+	 */
+	fun getRoadJunctions(roadId: String): List<JunctionResponseModel>
+
+	/**
+	 *
+	 */
+	fun getJunctionById(junctionId: String): Result<JunctionResponseModel>
 }

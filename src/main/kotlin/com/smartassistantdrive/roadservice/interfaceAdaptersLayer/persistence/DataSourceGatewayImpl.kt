@@ -131,4 +131,19 @@ class DataSourceGatewayImpl(
 		val junction = junctionRepository.save(junctionRequestModel.toDataSourceModel())
 		return Result.success(junction.toResponseModel())
 	}
+
+	override fun getRoadJunctions(roadId: String): List<JunctionResponseModel> {
+		return roadRepository.findByRoadId(ObjectId(roadId)).stream().findFirst().get().junctions.map {
+			junctionRepository.findByJunctionId(ObjectId(it)).getOrNull()!!.toResponseModel()
+		}
+	}
+
+	override fun getJunctionById(junctionId: String): Result<JunctionResponseModel> {
+		val result = junctionRepository.findByJunctionId(ObjectId(junctionId))
+		return if (result.isSuccess) {
+			Result.success(result.getOrNull()!!.toResponseModel())
+		} else {
+			Result.failure<JunctionResponseModel>(Exception("Junction not found"))
+		}
+	}
 }

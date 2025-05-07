@@ -1,7 +1,10 @@
 package com.smartassistantdrive.roadservice.domainLayer.conversion
 
+import com.smartassistantdrive.roadservice.businessLayer.adapter.JunctionResponseModel
 import com.smartassistantdrive.roadservice.businessLayer.adapter.RoadRequestModel
 import com.smartassistantdrive.roadservice.businessLayer.adapter.RoadResponseModel
+import com.smartassistantdrive.roadservice.domainLayer.JunctionModel
+import com.smartassistantdrive.roadservice.domainLayer.JunctionType
 import com.smartassistantdrive.roadservice.domainLayer.RoadModel
 import com.smartassistantdrive.roadservice.domainLayer.TechnicalCategory
 
@@ -33,5 +36,29 @@ fun RoadModel.toRoadResponse(): RoadResponseModel {
 		roadNumber,
 		roadName,
 		category.ordinal
+	)
+}
+
+/**
+ *
+ */
+fun JunctionModel.toJunctionResponse(): JunctionResponseModel {
+	return JunctionResponseModel(
+		junctionId = this.junctionId,
+		junctionType = this.junctionType.ordinal,
+		outgoingRoads = ArrayList(this.outgoingRoads.map { it.roadId }),
+		position = this.position
+	)
+}
+
+/**
+ *
+ */
+fun JunctionResponseModel.toJunctionModel(outgoingRoads: ArrayList<RoadModel>): JunctionModel {
+	return JunctionModel.create(
+		junctionId = this.junctionId,
+		junctionType = JunctionType.entries.get(this.junctionType),
+		outgoingRoads = outgoingRoads,
+		position = this.position
 	)
 }
