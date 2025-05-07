@@ -105,4 +105,9 @@ class UseCase(
 		val result = datasourceGateway.addJunctionToRoad(roadModel.roadId, junctionId)
 		return result
 	}
+
+	override fun getJunction(junctionId: String): Result<JunctionResponseModel> {
+		val result = datasourceGateway.getJunctionById(junctionId)
+		return result
+	}
 }
