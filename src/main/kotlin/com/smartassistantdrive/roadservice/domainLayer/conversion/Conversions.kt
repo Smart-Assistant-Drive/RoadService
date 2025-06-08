@@ -46,7 +46,7 @@ fun JunctionModel.toJunctionResponse(): JunctionResponseModel {
 	return JunctionResponseModel(
 		junctionId = this.junctionId,
 		junctionType = this.junctionType.ordinal,
-		outgoingRoads = ArrayList(this.outgoingRoads.map { it.roadId }),
+		outgoingRoads = this.outgoingRoads.map { Pair(it.key.roadId, it.value) }.toCollection(ArrayList()),
 		position = this.position
 	)
 }
@@ -54,11 +54,15 @@ fun JunctionModel.toJunctionResponse(): JunctionResponseModel {
 /**
  *
  */
-fun JunctionResponseModel.toJunctionModel(outgoingRoads: ArrayList<RoadModel>): JunctionModel {
+fun JunctionResponseModel.toJunctionModel(outgoingRoads: ArrayList<Pair<RoadModel, Int>>): JunctionModel {
+	val hashMap = HashMap<RoadModel, Int>()
+	outgoingRoads.forEach {
+		hashMap.put(it.first, it.second)
+	}
 	return JunctionModel.create(
 		junctionId = this.junctionId,
 		junctionType = JunctionType.entries.get(this.junctionType),
-		outgoingRoads = outgoingRoads,
+		outgoingRoads = hashMap,
 		position = this.position
 	)
 }

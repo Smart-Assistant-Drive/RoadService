@@ -19,7 +19,7 @@ class JunctionResponseDto @JsonCreator constructor(
 	/**
 	 *
 	 */
-	@param:JsonProperty("outgoingRoads") val outgoingRoads: ArrayList<String>,
+	@param:JsonProperty("outgoingRoads") val outgoingRoads: ArrayList<Pair<String, Int>>,
 
 	/**
 	 *

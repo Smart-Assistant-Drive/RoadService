@@ -8,7 +8,7 @@ import org.springframework.data.annotation.Id
  *
  */
 class JunctionDataSourceModel(
-	outgoingRoads: ArrayList<String>,
+	outgoingRoads: ArrayList<Pair<String, Int>>,
 	junctionType: Int,
 	position: Pair<Coordinate, Coordinate>,
 ) {
@@ -22,7 +22,7 @@ class JunctionDataSourceModel(
 	/**
 	 *
 	 */
-	val outgoingRoads: ArrayList<String> = outgoingRoads
+	val outgoingRoads: ArrayList<Pair<String, Int>> = outgoingRoads
 
 	/**
 	 *
@@ -36,7 +36,7 @@ class JunctionDataSourceModel(
 
 	constructor(
 		junctionId: ObjectId,
-		outgoingRoads: ArrayList<String>,
+		outgoingRoads: ArrayList<Pair<String, Int>>,
 		junctionType: Int,
 		position: Pair<Coordinate, Coordinate>,
 	) : this(outgoingRoads, junctionType, position) {

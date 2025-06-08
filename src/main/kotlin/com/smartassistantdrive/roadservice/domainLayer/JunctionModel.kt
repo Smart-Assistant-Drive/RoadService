@@ -16,7 +16,7 @@ interface JunctionModel {
 	 * The outgoing roads of the junction: a car in a specific flow should
 	 * follow the same direction flow of the outgoing road (specified with the id direction).
 	 */
-	val outgoingRoads: ArrayList<RoadModel>
+	val outgoingRoads: HashMap<RoadModel, Int>
 
 	/**
 	 *
@@ -37,14 +37,15 @@ interface JunctionModel {
 		 */
 		fun create(
 			junctionId: String,
-			outgoingRoads: ArrayList<RoadModel>,
+			// outgoingRoads: ArrayList<RoadModel>,
+			outgoingRoads: HashMap<RoadModel, Int>,
 			junctionType: JunctionType,
 			position: Pair<Coordinate, Coordinate>,
 		): JunctionModel {
 			return object : JunctionModel {
 				override val junctionId: String
 					get() = junctionId
-				override val outgoingRoads: ArrayList<RoadModel>
+				override val outgoingRoads: HashMap<RoadModel, Int>
 					get() = outgoingRoads
 				override val junctionType: JunctionType
 					get() = junctionType
