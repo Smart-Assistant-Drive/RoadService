@@ -2,7 +2,9 @@ package com.smartassistantdrive.roadservice.businessLayer
 
 import com.smartassistantdrive.roadservice.businessLayer.adapter.Coordinate
 import com.smartassistantdrive.roadservice.businessLayer.adapter.JunctionRequestModel
+import com.smartassistantdrive.roadservice.businessLayer.adapter.RoadRequestModel
 import com.smartassistantdrive.roadservice.domainLayer.JunctionType
+import com.tngtech.archunit.thirdparty.com.google.common.collect.Lists
 import io.cucumber.java.en.Given
 import io.cucumber.java.en.Then
 import io.cucumber.java.en.When
@@ -33,11 +35,19 @@ class JunctionCreationTest {
 
 	@When("is created")
 	fun whenFun() {
+		val roadResponse = useCase.addRoad(
+			RoadRequestModel(
+				category = 1,
+				roadName = "Via strada",
+				roadNumber = "1"
+			)
+		)
+
 		val result = useCase.addJunction(
 			JunctionRequestModel(
 				junctionType = type.ordinal,
 				position = coordinates,
-				outgoingRoads = ArrayList()
+				outgoingRoads = Lists.newArrayList(Pair(roadResponse.getOrNull()!!.roadId, 1))
 			)
 		)
 		if (result.isSuccess) {

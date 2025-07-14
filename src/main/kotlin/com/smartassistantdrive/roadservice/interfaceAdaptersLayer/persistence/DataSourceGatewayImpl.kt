@@ -82,18 +82,18 @@ class DataSourceGatewayImpl(
 		}
 	}
 
-	override fun addDrivingFlow(drivingFlowRequestModel: DrivingFlowRequestModel): Result<String> {
+	override fun addDrivingFlow(drivingFlowRequestModel: DrivingFlowRequestModel): Result<DrivingFlowResponseModel> {
 		try {
 			val result = getRoadById(drivingFlowRequestModel.roadId)
 			if (result.isSuccess) {
 				val flowToSave = DrivingFlowDataSourceModel(
 					drivingFlowRequestModel.roadId,
-					1,
-					2,
+					drivingFlowRequestModel.idDirection,
+					drivingFlowRequestModel.numOfLanes,
 					drivingFlowRequestModel.roadCoordinates
 				)
 				drivingFlowRepository.insert(flowToSave)
-				return Result.success(flowToSave.id.toString())
+				return Result.success(flowToSave.toResponseModel())
 			}
 			throw RoadNotFoundException()
 		} catch (e: Exception) {

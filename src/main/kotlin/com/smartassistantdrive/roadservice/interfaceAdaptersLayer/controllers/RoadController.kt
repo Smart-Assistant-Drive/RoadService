@@ -1,12 +1,15 @@
 package com.smartassistantdrive.roadservice.interfaceAdaptersLayer.controllers
 
 import com.smartassistantdrive.roadservice.businessLayer.adapter.DrivingFlowRequestModel
+import com.smartassistantdrive.roadservice.businessLayer.adapter.DrivingFlowUpdateModel
+import com.smartassistantdrive.roadservice.businessLayer.adapter.JunctionRequestModel
 import com.smartassistantdrive.roadservice.businessLayer.adapter.RoadRequestModel
 import com.smartassistantdrive.roadservice.businessLayer.adapter.RoadUpdateModel
 import com.smartassistantdrive.roadservice.businessLayer.boundaries.RoadInputBoundary
 import com.smartassistantdrive.roadservice.businessLayer.exception.RoadExistsException
 import com.smartassistantdrive.roadservice.businessLayer.exception.RoadNotFoundException
 import com.smartassistantdrive.roadservice.interfaceAdaptersLayer.controllers.dto.DrivingFlowResponseDto
+import com.smartassistantdrive.roadservice.interfaceAdaptersLayer.controllers.dto.JunctionResponseDto
 import com.smartassistantdrive.roadservice.interfaceAdaptersLayer.controllers.dto.RoadResponseDto
 import com.smartassistantdrive.roadservice.interfaceAdaptersLayer.controllers.dto.StringResponseDto
 import com.smartassistantdrive.roadservice.interfaceAdaptersLayer.controllers.dto.toDto
@@ -99,16 +102,16 @@ class RoadController(private val roadInput: RoadInputBoundary) {
 			)
 		]
 	)
-	fun addFlow(@RequestBody drivingFlowRequestModel: DrivingFlowRequestModel): HttpEntity<StringResponseDto> {
+	fun addFlow(@RequestBody drivingFlowRequestModel: DrivingFlowRequestModel): HttpEntity<DrivingFlowResponseDto> {
 		val links = WebMvcLinkBuilder.linkTo(
 			WebMvcLinkBuilder.methodOn(RoadController::class.java).addFlow(drivingFlowRequestModel)
 		).withSelfRel()
 		val result = roadInput.addDrivingFlow(drivingFlowRequestModel)
 		return if (result.isSuccess) {
-			logger.info(result.getOrNull())
+			logger.info(result.getOrNull()?.roadId)
 			ResponseEntity(result.getOrNull()!!.toDto(links), HttpStatus.CREATED)
 		} else {
-			logger.error("Eccezione: ${result.exceptionOrNull()}")
+			logger.error("Exception: ${result.exceptionOrNull()}")
 			when (result.exceptionOrNull()) {
 				is IllegalArgumentException -> ResponseEntity.badRequest().build()
 				is RoadNotFoundException -> ResponseEntity.status(HttpStatus.NOT_FOUND).build()
@@ -171,11 +174,7 @@ class RoadController(private val roadInput: RoadInputBoundary) {
 		return if (result.isSuccess) {
 			ResponseEntity(result.getOrNull()!!.toDto(links), HttpStatus.CREATED)
 		} else {
-			when (result.exceptionOrNull()) {
-				is IllegalArgumentException -> ResponseEntity.badRequest().build()
-				is RoadExistsException -> ResponseEntity.status(HttpStatus.CONFLICT).build()
-				else -> ResponseEntity.internalServerError().build()
-			}
+			checkRoadExist(result.exceptionOrNull())
 		}
 	}
 
@@ -230,13 +229,9 @@ class RoadController(private val roadInput: RoadInputBoundary) {
 
 		return if (result.isSuccess) {
 			// check success of road obtained
-			ResponseEntity(result.getOrNull()!!.toDto(links), HttpStatus.OK)
+			ResponseEntity<RoadResponseDto>(result.getOrNull()!!.toDto(links), HttpStatus.OK)
 		} else {
-			when (result.exceptionOrNull()) {
-				is RoadNotFoundException -> ResponseEntity.status(HttpStatus.NOT_FOUND).build()
-				is IllegalArgumentException -> ResponseEntity.badRequest().build()
-				else -> ResponseEntity.internalServerError().build()
-			}
+			checkRoadNotFound(result.exceptionOrNull())
 		}
 	}
 
@@ -364,13 +359,207 @@ class RoadController(private val roadInput: RoadInputBoundary) {
 		val result = roadInput.changeRoad(id, roadUpdateModel)
 
 		return if (result.isSuccess) {
-			ResponseEntity(result.getOrNull()!!.toDto(links), HttpStatus.OK)
+			ResponseEntity<RoadResponseDto>(result.getOrNull()!!.toDto(links), HttpStatus.OK)
 		} else {
 			when (result.exceptionOrNull()) {
 				is IllegalArgumentException -> ResponseEntity.badRequest().build()
 				is RoadNotFoundException -> ResponseEntity.status(HttpStatus.NOT_FOUND).build()
 				else -> ResponseEntity.internalServerError().build()
 			}
+		}
+	}
+
+	/**
+	 *
+	 */
+	@PutMapping("/flows")
+	@Operation(
+		summary = "Change existing driving flow",
+		description = "Change existing driving flow with a specific id",
+		requestBody = io.swagger.v3.oas.annotations.parameters.RequestBody(
+			content = [
+				Content(
+					mediaType = "application/json",
+					schema = Schema(implementation = DrivingFlowUpdateModel::class)
+				)
+			],
+			required = true
+		),
+		responses = [
+			ApiResponse(
+				responseCode = "200",
+				description = "Driving flow changed successfully",
+				content = [
+					Content(
+						mediaType = "application/json",
+						schema = Schema(implementation = DrivingFlowResponseDto::class)
+					)
+				]
+			),
+			ApiResponse(
+				responseCode = "400",
+				description = "Invalid road, cannot update a non-existing driving flow",
+				content = [Content()]
+			),
+			ApiResponse(
+				responseCode = "404",
+				description = "Valid driving flow not found",
+				content = [Content()]
+			),
+			ApiResponse(
+				responseCode = "500",
+				description = "Internal server error",
+				content = [Content()]
+			)
+		]
+	)
+	fun updateDrivingFlow(
+		@RequestBody drivingFlowUpdateModel: DrivingFlowUpdateModel,
+	): HttpEntity<DrivingFlowResponseDto> {
+		val links = WebMvcLinkBuilder.linkTo(
+			WebMvcLinkBuilder.methodOn(RoadController::class.java).updateDrivingFlow(drivingFlowUpdateModel)
+		).withSelfRel()
+
+		val result = roadInput.changeDrivingFlow(drivingFlowUpdateModel)
+
+		return if (result.isSuccess) {
+			ResponseEntity<DrivingFlowResponseDto>(result.getOrNull()!!.toDto(links), HttpStatus.OK)
+		} else {
+			when (result.exceptionOrNull()) {
+				is IllegalArgumentException -> ResponseEntity.badRequest().build()
+				else -> ResponseEntity.internalServerError().build()
+			}
+		}
+	}
+
+	/**
+	 *
+	 */
+	@GetMapping("/junction/{id}")
+	@Operation(
+		summary = "Get existing junction",
+		description = "Get existing junction with a specific id",
+		parameters = [
+			Parameter(
+				name = "id",
+				description = "Junction id to be obtained",
+				`in` = ParameterIn.PATH
+			)
+		],
+		responses = [
+			ApiResponse(
+				responseCode = "200",
+				description = "Junction obtained successfully",
+				content = [
+					Content(
+						mediaType = "application/json",
+						schema = Schema(implementation = JunctionResponseDto::class)
+					)
+				]
+			),
+			ApiResponse(
+				responseCode = "400",
+				description = "Invalid junction",
+				content = [Content()]
+			),
+			ApiResponse(
+				responseCode = "404",
+				description = "Valid junction not found",
+				content = [Content()]
+			),
+			ApiResponse(
+				responseCode = "500",
+				description = "Internal server error",
+				content = [Content()]
+			)
+		]
+	)
+	fun getJunction(@PathVariable id: String): HttpEntity<JunctionResponseDto> {
+		val links = WebMvcLinkBuilder.linkTo(
+			WebMvcLinkBuilder.methodOn(RoadController::class.java).getJunction(id)
+		).withSelfRel()
+
+		val result = roadInput.getJunction(id)
+
+		return if (result.isSuccess) {
+			// check success of junction obtained
+			ResponseEntity<JunctionResponseDto>(result.getOrNull()!!.toDto(links), HttpStatus.OK)
+		} else {
+			checkRoadNotFound(result.exceptionOrNull())
+		}
+	}
+
+	/**
+	 *
+	 */
+	@PostMapping("/junction")
+	@Operation(
+		summary = "Add new junction",
+		description = "Add new junction with a specific id, position and outgoing roads",
+		requestBody = io.swagger.v3.oas.annotations.parameters.RequestBody(
+			content = [
+				Content(
+					mediaType = "application/json",
+					schema = Schema(implementation = JunctionResponseDto::class)
+				)
+			],
+			required = true
+		),
+		responses = [
+			ApiResponse(
+				responseCode = "201",
+				description = "Junction added successfully",
+				content = [
+					Content(
+						mediaType = "application/json",
+						schema = Schema(implementation = JunctionResponseDto::class)
+					)
+				]
+			),
+			ApiResponse(
+				responseCode = "400",
+				description = "Invalid junction",
+				content = [Content()]
+			),
+			ApiResponse(
+				responseCode = "409",
+				description = "Valid junction already exists",
+				content = [Content()]
+			),
+			ApiResponse(
+				responseCode = "500",
+				description = "Internal server error",
+				content = [Content()]
+			)
+		]
+	)
+	fun addJunction(@RequestBody junctionRequestModel: JunctionRequestModel): HttpEntity<JunctionResponseDto> {
+		val links = WebMvcLinkBuilder.linkTo(
+			WebMvcLinkBuilder.methodOn(RoadController::class.java).addJunction(junctionRequestModel)
+		).withSelfRel()
+
+		val result = roadInput.addJunction(junctionRequestModel)
+
+		return if (result.isSuccess) {
+			ResponseEntity<JunctionResponseDto>(result.getOrNull()!!.toDto(links), HttpStatus.CREATED)
+		} else {
+			checkRoadExist(result.exceptionOrNull())
+		}
+	}
+
+	private fun <T> checkRoadExist(throwable: Throwable?): HttpEntity<T> {
+		return when (throwable) {
+			is IllegalArgumentException -> ResponseEntity.badRequest().build<T>()
+			is RoadExistsException -> ResponseEntity.status(HttpStatus.CONFLICT).build<T>()
+			else -> ResponseEntity.internalServerError().build<T>()
+		}
+	}
+
+	private fun <T> checkRoadNotFound(throwable: Throwable?): HttpEntity<T> {
+		return when (throwable) {
+			is RoadNotFoundException -> ResponseEntity.status(HttpStatus.NOT_FOUND).build()
+			is IllegalArgumentException -> ResponseEntity.badRequest().build()
+			else -> ResponseEntity.internalServerError().build()
 		}
 	}
 }

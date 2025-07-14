@@ -8,7 +8,6 @@ import com.smartassistantdrive.roadservice.businessLayer.adapter.JunctionRespons
 import com.smartassistantdrive.roadservice.businessLayer.adapter.RoadRequestModel
 import com.smartassistantdrive.roadservice.businessLayer.adapter.RoadResponseModel
 import com.smartassistantdrive.roadservice.businessLayer.adapter.RoadUpdateModel
-import com.smartassistantdrive.roadservice.domainLayer.RoadModel
 
 /**
  *
@@ -23,7 +22,7 @@ interface RoadInputBoundary {
 	/**
 	 *
 	 */
-	fun addDrivingFlow(drivingFlowRequestModel: DrivingFlowRequestModel): Result<String>
+	fun addDrivingFlow(drivingFlowRequestModel: DrivingFlowRequestModel): Result<DrivingFlowResponseModel>
 
 	/**
 	 *
@@ -58,7 +57,7 @@ interface RoadInputBoundary {
 	/**
 	 *
 	 */
-	fun addJunctionToRoad(roadModel: RoadModel, junctionId: String): Result<RoadResponseModel>
+	fun addJunctionToRoad(roadId: String, junctionId: String): Result<RoadResponseModel>
 
 	/**
 	 *

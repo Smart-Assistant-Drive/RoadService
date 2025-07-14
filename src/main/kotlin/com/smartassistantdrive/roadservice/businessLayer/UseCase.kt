@@ -13,7 +13,6 @@ import com.smartassistantdrive.roadservice.businessLayer.boundaries.RoadInputBou
 import com.smartassistantdrive.roadservice.businessLayer.exception.GenericException
 import com.smartassistantdrive.roadservice.businessLayer.exception.RoadExistsException
 import com.smartassistantdrive.roadservice.businessLayer.exception.RoadNotFoundException
-import com.smartassistantdrive.roadservice.domainLayer.RoadModel
 import com.smartassistantdrive.roadservice.domainLayer.conversion.toRoadModel
 import com.smartassistantdrive.roadservice.domainLayer.policy.RoadPolicy
 import org.slf4j.Logger
@@ -42,15 +41,15 @@ class UseCase(
 		return datasourceGateway.addRoad(roadRequestModel)
 	}
 
-	override fun addDrivingFlow(drivingFlowRequestModel: DrivingFlowRequestModel): Result<String> {
+	override fun addDrivingFlow(drivingFlowRequestModel: DrivingFlowRequestModel): Result<DrivingFlowResponseModel> {
 		logger.info("Added new driving flow")
 		val road = datasourceGateway.getRoadById(drivingFlowRequestModel.roadId)
 		if (road.isSuccess) {
 			return datasourceGateway.addDrivingFlow(drivingFlowRequestModel)
 		} else {
 			return when (road.exceptionOrNull()) {
-				is Exception -> Result.failure<String>(road.exceptionOrNull() as Exception)
-				else -> Result.failure<String>(GenericException())
+				is Exception -> Result.failure<DrivingFlowResponseModel>(road.exceptionOrNull() as Exception)
+				else -> Result.failure<DrivingFlowResponseModel>(GenericException())
 			}
 		}
 	}
@@ -73,7 +72,7 @@ class UseCase(
 				junctionResponseModel.outgoingRoads.forEach {
 					val road = getRoad(it.first)
 					if (road.isSuccess) {
-						addJunctionToRoad(road.getOrNull()!!.toRoadModel(), junctionResponseModel.junctionId)
+						addJunctionToRoad(road.getOrNull()!!.toRoadModel().roadId, junctionResponseModel.junctionId)
 					} else {
 						return Result.failure(RoadNotFoundException())
 					}
@@ -100,9 +99,9 @@ class UseCase(
 		return datasourceGateway.updateDrivingFlow(drivingFlowUpdateModel)
 	}
 
-	override fun addJunctionToRoad(roadModel: RoadModel, junctionId: String): Result<RoadResponseModel> {
+	override fun addJunctionToRoad(roadId: String, junctionId: String): Result<RoadResponseModel> {
 		logger.info("Adding junction to existing road...")
-		val result = datasourceGateway.addJunctionToRoad(roadModel.roadId, junctionId)
+		val result = datasourceGateway.addJunctionToRoad(roadId, junctionId)
 		return result
 	}
 

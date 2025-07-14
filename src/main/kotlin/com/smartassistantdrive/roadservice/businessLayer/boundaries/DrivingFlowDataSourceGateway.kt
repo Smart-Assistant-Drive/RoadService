@@ -12,7 +12,7 @@ interface DrivingFlowDataSourceGateway {
 	/**
 	 *
 	 */
-	fun addDrivingFlow(drivingFlowRequestModel: DrivingFlowRequestModel): Result<String>
+	fun addDrivingFlow(drivingFlowRequestModel: DrivingFlowRequestModel): Result<DrivingFlowResponseModel>
 
 	/**
 	 *
