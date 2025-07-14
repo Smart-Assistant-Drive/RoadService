@@ -33,8 +33,6 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-aop")
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
 
-	runtimeOnly("org.springdoc:springdoc-openapi-kotlin:1.8.0")
-
 	testImplementation(libs.mockito.kotlin)
 	testImplementation(libs.archunit)
 	testImplementation(libs.bundles.cucmber.test)
