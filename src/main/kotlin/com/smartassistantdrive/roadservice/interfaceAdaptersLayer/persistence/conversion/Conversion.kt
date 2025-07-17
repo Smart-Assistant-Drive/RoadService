@@ -70,3 +70,15 @@ fun JunctionDataSourceModel.toResponseModel(): JunctionResponseModel {
 		position
 	)
 }
+
+/**
+ *
+ */
+fun JunctionResponseModel.toDataSourceModel(): JunctionDataSourceModel {
+	return JunctionDataSourceModel(
+		ObjectId(junctionId),
+		outgoingRoads,
+		junctionType,
+		position
+	)
+}

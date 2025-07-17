@@ -3,6 +3,7 @@ package com.smartassistantdrive.roadservice.interfaceAdaptersLayer.controllers
 import com.smartassistantdrive.roadservice.businessLayer.adapter.DrivingFlowRequestModel
 import com.smartassistantdrive.roadservice.businessLayer.adapter.DrivingFlowUpdateModel
 import com.smartassistantdrive.roadservice.businessLayer.adapter.JunctionRequestModel
+import com.smartassistantdrive.roadservice.businessLayer.adapter.JunctionUpdateModel
 import com.smartassistantdrive.roadservice.businessLayer.adapter.RoadRequestModel
 import com.smartassistantdrive.roadservice.businessLayer.adapter.RoadUpdateModel
 import com.smartassistantdrive.roadservice.businessLayer.boundaries.RoadInputBoundary
@@ -545,6 +546,129 @@ class RoadController(private val roadInput: RoadInputBoundary) {
 		} else {
 			checkRoadExist(result.exceptionOrNull())
 		}
+	}
+
+	/**
+	 *
+	 */
+	@PutMapping("/junction/{id}")
+	@Operation(
+		summary = "Change existing junction",
+		description = "Change existing junction with a specific id",
+		parameters = [
+			Parameter(
+				name = "id",
+				description = "Junction id to change",
+				`in` = ParameterIn.PATH
+			)
+		],
+		requestBody = io.swagger.v3.oas.annotations.parameters.RequestBody(
+			content = [
+				Content(
+					mediaType = "application/json",
+					schema = Schema(implementation = JunctionUpdateModel::class)
+				)
+			],
+			required = true
+		),
+		responses = [
+			ApiResponse(
+				responseCode = "200",
+				description = "Junction changed successfully",
+				content = [
+					Content(
+						mediaType = "application/json",
+						schema = Schema(implementation = JunctionResponseDto::class)
+					)
+				]
+			),
+			ApiResponse(
+				responseCode = "400",
+				description = "Invalid junction, cannot update a non-existing junction",
+				content = [Content()]
+			),
+			ApiResponse(
+				responseCode = "404",
+				description = "Valid road not found",
+				content = [Content()]
+			),
+			ApiResponse(
+				responseCode = "500",
+				description = "Internal server error",
+				content = [Content()]
+			)
+		]
+	)
+	fun updateJunction(
+		@PathVariable id: String,
+		@RequestBody junctionUpdateModel: JunctionUpdateModel,
+	): HttpEntity<JunctionResponseDto> {
+		val links = WebMvcLinkBuilder.linkTo(
+			WebMvcLinkBuilder.methodOn(RoadController::class.java).updateJunction(id, junctionUpdateModel)
+		).withSelfRel()
+
+		val result = roadInput.updateJunction(id, junctionUpdateModel)
+
+		return if (result.isSuccess) {
+			ResponseEntity<JunctionResponseDto>(result.getOrNull()!!.toDto(links), HttpStatus.OK)
+		} else {
+			when (result.exceptionOrNull()) {
+				is IllegalArgumentException -> ResponseEntity.badRequest().build()
+				else -> ResponseEntity.internalServerError().build()
+			}
+		}
+	}
+
+	/**
+	 *
+	 */
+	@GetMapping("/junction/road/{id}")
+	@Operation(
+		summary = "Get existing junctions on a specific road",
+		description = "Get existing junction within a specific road",
+		parameters = [
+			Parameter(
+				name = "id",
+				description = "Road id to be obtained",
+				`in` = ParameterIn.PATH
+			)
+		],
+		responses = [
+			ApiResponse(
+				responseCode = "200",
+				description = "Junctions obtained successfully",
+				content = [
+					Content(
+						mediaType = "application/json",
+						schema = Schema(implementation = JunctionResponseDto::class)
+					)
+				]
+			),
+			ApiResponse(
+				responseCode = "400",
+				description = "Invalid request",
+				content = [Content()]
+			),
+			ApiResponse(
+				responseCode = "404",
+				description = "Valid road or junctions not found",
+				content = [Content()]
+			),
+			ApiResponse(
+				responseCode = "500",
+				description = "Internal server error",
+				content = [Content()]
+			)
+		]
+	)
+	fun getJunctionsOnRoad(@PathVariable id: String): HttpEntity<List<JunctionResponseDto>> {
+		val links = WebMvcLinkBuilder.linkTo(
+			WebMvcLinkBuilder.methodOn(RoadController::class.java).getJunctionsOnRoad(id)
+		).withSelfRel()
+
+		val result = roadInput.getRoadJunctions(id).map { it.toDto(links) }
+
+		return ResponseEntity<List<JunctionResponseDto>>(result, HttpStatus.OK)
 	}
 
 	private fun <T> checkRoadExist(throwable: Throwable?): HttpEntity<T> {

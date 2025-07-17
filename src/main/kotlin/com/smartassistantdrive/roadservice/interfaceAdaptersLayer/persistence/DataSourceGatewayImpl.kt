@@ -5,6 +5,7 @@ import com.smartassistantdrive.roadservice.businessLayer.adapter.DrivingFlowResp
 import com.smartassistantdrive.roadservice.businessLayer.adapter.DrivingFlowUpdateModel
 import com.smartassistantdrive.roadservice.businessLayer.adapter.JunctionRequestModel
 import com.smartassistantdrive.roadservice.businessLayer.adapter.JunctionResponseModel
+import com.smartassistantdrive.roadservice.businessLayer.adapter.JunctionUpdateModel
 import com.smartassistantdrive.roadservice.businessLayer.adapter.RoadRequestModel
 import com.smartassistantdrive.roadservice.businessLayer.adapter.RoadResponseModel
 import com.smartassistantdrive.roadservice.businessLayer.adapter.RoadUpdateModel
@@ -144,6 +145,19 @@ class DataSourceGatewayImpl(
 			Result.success(result.getOrNull()!!.toResponseModel())
 		} else {
 			Result.failure<JunctionResponseModel>(Exception("Junction not found"))
+		}
+	}
+
+	override fun updateJunction(
+		junctionId: String,
+		junctionUpdateModel: JunctionUpdateModel,
+	): Result<JunctionResponseModel> {
+		val result = getJunctionById(junctionId)
+		if (result.isSuccess) {
+			val newJunction = junctionRepository.save(result.getOrNull()!!.toDataSourceModel())
+			return Result.success(newJunction.toResponseModel())
+		} else {
+			return Result.failure(DrivingFlowNotFountException())
 		}
 	}
 }

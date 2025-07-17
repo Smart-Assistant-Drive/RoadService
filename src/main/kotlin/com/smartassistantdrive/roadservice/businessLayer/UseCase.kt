@@ -5,6 +5,7 @@ import com.smartassistantdrive.roadservice.businessLayer.adapter.DrivingFlowResp
 import com.smartassistantdrive.roadservice.businessLayer.adapter.DrivingFlowUpdateModel
 import com.smartassistantdrive.roadservice.businessLayer.adapter.JunctionRequestModel
 import com.smartassistantdrive.roadservice.businessLayer.adapter.JunctionResponseModel
+import com.smartassistantdrive.roadservice.businessLayer.adapter.JunctionUpdateModel
 import com.smartassistantdrive.roadservice.businessLayer.adapter.RoadRequestModel
 import com.smartassistantdrive.roadservice.businessLayer.adapter.RoadResponseModel
 import com.smartassistantdrive.roadservice.businessLayer.adapter.RoadUpdateModel
@@ -27,11 +28,6 @@ class UseCase(
 
 	private val logger: Logger = LoggerFactory.getLogger(UseCase::class.java)
 	private val roadPolicy: RoadPolicy = RoadPolicy()
-
-	// TODO implement cashing
-	// private val roadCash: HashSet<RoadModel> = HashSet()
-	// private val drivingFlowsCash: HashSet<DrivingFlow> = HashSet()
-	// private val junctionsCash: HashSet<JunctionModel> = HashSet()
 
 	override fun addRoad(roadRequestModel: RoadRequestModel): Result<RoadResponseModel> {
 		val roadsList = datasourceGateway.getAllRoadsByNumber(roadRequestModel.roadNumber)
@@ -108,5 +104,16 @@ class UseCase(
 	override fun getJunction(junctionId: String): Result<JunctionResponseModel> {
 		val result = datasourceGateway.getJunctionById(junctionId)
 		return result
+	}
+
+	override fun updateJunction(
+		junctionId: String,
+		junctionUpdateModel: JunctionUpdateModel,
+	): Result<JunctionResponseModel> {
+		return datasourceGateway.updateJunction(junctionId, junctionUpdateModel)
+	}
+
+	override fun getRoadJunctions(roadId: String): List<JunctionResponseModel> {
+		return datasourceGateway.getRoadJunctions(roadId)
 	}
 }

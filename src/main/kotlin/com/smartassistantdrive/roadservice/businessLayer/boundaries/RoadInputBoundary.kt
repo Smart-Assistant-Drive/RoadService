@@ -5,6 +5,7 @@ import com.smartassistantdrive.roadservice.businessLayer.adapter.DrivingFlowResp
 import com.smartassistantdrive.roadservice.businessLayer.adapter.DrivingFlowUpdateModel
 import com.smartassistantdrive.roadservice.businessLayer.adapter.JunctionRequestModel
 import com.smartassistantdrive.roadservice.businessLayer.adapter.JunctionResponseModel
+import com.smartassistantdrive.roadservice.businessLayer.adapter.JunctionUpdateModel
 import com.smartassistantdrive.roadservice.businessLayer.adapter.RoadRequestModel
 import com.smartassistantdrive.roadservice.businessLayer.adapter.RoadResponseModel
 import com.smartassistantdrive.roadservice.businessLayer.adapter.RoadUpdateModel
@@ -37,11 +38,6 @@ interface RoadInputBoundary {
 	/**
 	 *
 	 */
-	// fun updateJunction()
-
-	/**
-	 *
-	 */
 	fun getRoad(roadId: String): Result<RoadResponseModel>
 
 	/**
@@ -63,4 +59,14 @@ interface RoadInputBoundary {
 	 *
 	 */
 	fun getJunction(junctionId: String): Result<JunctionResponseModel>
+
+	/**
+	 *
+	 */
+	fun updateJunction(junctionId: String, junctionUpdateModel: JunctionUpdateModel): Result<JunctionResponseModel>
+
+	/**
+	 *
+	 */
+	fun getRoadJunctions(roadId: String): List<JunctionResponseModel>
 }
