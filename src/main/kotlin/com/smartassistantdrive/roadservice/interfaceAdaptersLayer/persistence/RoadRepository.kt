@@ -12,6 +12,11 @@ interface RoadRepository : MongoRepository<RoadDataSourceModel?, String?> {
 	/**
 	 *
 	 */
+	override fun findAll(): List<RoadDataSourceModel>
+
+	/**
+	 *
+	 */
 	fun findByRoadId(roadId: ObjectId?): List<RoadDataSourceModel>
 
 	/**

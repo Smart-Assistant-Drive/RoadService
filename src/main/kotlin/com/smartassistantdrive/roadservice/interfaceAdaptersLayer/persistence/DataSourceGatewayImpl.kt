@@ -61,6 +61,15 @@ class DataSourceGatewayImpl(
 		}.collect(Collectors.toList())
 	}
 
+	override fun getAllRoads(): List<RoadResponseModel> {
+		val result = roadRepository.findAll().toList()
+		return result.stream().filter {
+			it != null
+		}.map {
+			it.toResponseModel()
+		}.collect(Collectors.toList())
+	}
+
 	override fun getRoadById(roadId: String): Result<RoadResponseModel> {
 		val list = roadRepository.findByRoadId(ObjectId(roadId))
 		list.stream().map {

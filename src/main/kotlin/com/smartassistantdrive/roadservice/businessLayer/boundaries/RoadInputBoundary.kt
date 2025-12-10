@@ -69,4 +69,5 @@ interface RoadInputBoundary {
 	 *
 	 */
 	fun getRoadJunctions(roadId: String): List<JunctionResponseModel>
+	fun getRoads(): List<RoadResponseModel>
 }

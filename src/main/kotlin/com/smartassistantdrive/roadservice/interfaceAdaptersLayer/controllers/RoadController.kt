@@ -239,6 +239,58 @@ class RoadController(private val roadInput: RoadInputBoundary) {
 	/**
 	 *
 	 */
+	@GetMapping("/roads")
+	@Operation(
+		summary = "Get existing road",
+		description = "Get existing road with a specific id",
+		parameters = [
+			Parameter(
+				name = "id",
+				description = "Road id to be obtained",
+				`in` = ParameterIn.PATH
+			)
+		],
+		responses = [
+			ApiResponse(
+				responseCode = "200",
+				description = "Road obtained successfully",
+				content = [
+					Content(
+						mediaType = "application/json",
+						schema = Schema(implementation = RoadResponseDto::class)
+					)
+				]
+			),
+			ApiResponse(
+				responseCode = "400",
+				description = "Invalid road, not existing",
+				content = [Content()]
+			),
+			ApiResponse(
+				responseCode = "404",
+				description = "Valid road not found",
+				content = [Content()]
+			),
+			ApiResponse(
+				responseCode = "500",
+				description = "Internal server error",
+				content = [Content()]
+			)
+		]
+	)
+	fun getAllRoad(): HttpEntity<List<RoadResponseDto>> {
+		val links = WebMvcLinkBuilder.linkTo(
+			WebMvcLinkBuilder.methodOn(RoadController::class.java).getAllRoad()
+		).withSelfRel()
+
+		val result = roadInput.getRoads()
+
+		return ResponseEntity<List<RoadResponseDto>>(result.map { it.toDto(links) }.toList(), HttpStatus.OK)
+	}
+
+	/**
+	 *
+	 */
 	@GetMapping("/flows/{id}")
 	@Operation(
 		summary = "Get all direction flows within an existing road",

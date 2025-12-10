@@ -83,6 +83,10 @@ class UseCase(
 		return datasourceGateway.getRoadById(roadId)
 	}
 
+	override fun getRoads(): List<RoadResponseModel> {
+		return datasourceGateway.getAllRoads()
+	}
+
 	override fun getAllDirectionFlows(roadId: String): Result<List<DrivingFlowResponseModel>> {
 		val road = datasourceGateway.getRoadById(roadId)
 		if (road.isFailure) {

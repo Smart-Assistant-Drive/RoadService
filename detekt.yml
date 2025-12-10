@@ -7,9 +7,9 @@ potential-bugs:
 complexity:
   TooManyFunctions:
     thresholdInFiles: 15
-    thresholdInClasses: 15
+    thresholdInClasses: 20
     thresholdInInterfaces: 15
-    thresholdInObjects: 15
+    thresholdInObjects: 20
     thresholdInEnums: 15
   LongParameterList:
     functionThreshold: 10

@@ -13,10 +13,8 @@ version = "1.0-SNAPSHOT"
 
 extra["springCloudVersion"] = "2023.0.3"
 
-java {
-	toolchain {
-		languageVersion = JavaLanguageVersion.of(21)
-	}
+kotlin {
+	jvmToolchain(21)
 }
 
 repositories {
@@ -78,4 +76,5 @@ tasks.jar {
 			mapOf("Implementation-Title" to project.name, "Implementation-Version" to project.version)
 		)
 	}
+	enabled = false
 }
