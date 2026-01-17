@@ -1,6 +1,5 @@
 package com.smartassistantdrive.roadservice.interfaceAdaptersLayer.persistence.entity
 
-import org.bson.types.ObjectId
 import org.springframework.data.annotation.Id
 import org.springframework.data.mongodb.core.index.Indexed
 
@@ -20,7 +19,7 @@ class RoadDataSourceModel(
 	 *
 	 */
 	@Id
-	var roadId: ObjectId? = null
+	var roadId: String? = null
 
 	/**
 	 *
@@ -54,7 +53,7 @@ class RoadDataSourceModel(
 	val junctions: ArrayList<String> = junctions
 
 	constructor(
-		roadId: ObjectId,
+		roadId: String,
 		roadNumber: String,
 		roadName: String,
 		category: Int,

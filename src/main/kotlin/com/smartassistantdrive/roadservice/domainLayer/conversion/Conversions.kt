@@ -5,6 +5,7 @@ import com.smartassistantdrive.roadservice.businessLayer.adapter.RoadRequestMode
 import com.smartassistantdrive.roadservice.businessLayer.adapter.RoadResponseModel
 import com.smartassistantdrive.roadservice.domainLayer.JunctionModel
 import com.smartassistantdrive.roadservice.domainLayer.JunctionType
+import com.smartassistantdrive.roadservice.domainLayer.OutgoingRoad
 import com.smartassistantdrive.roadservice.domainLayer.RoadModel
 import com.smartassistantdrive.roadservice.domainLayer.TechnicalCategory
 
@@ -46,7 +47,7 @@ fun JunctionModel.toJunctionResponse(): JunctionResponseModel {
 	return JunctionResponseModel(
 		junctionId = this.junctionId,
 		junctionType = this.junctionType.ordinal,
-		outgoingRoads = this.outgoingRoads.map { Pair(it.key.roadId, it.value) }.toCollection(ArrayList()),
+		outgoingRoads = this.outgoingRoads.map { OutgoingRoad(it.key.roadId, it.value) }.toCollection(ArrayList()),
 		position = this.position
 	)
 }

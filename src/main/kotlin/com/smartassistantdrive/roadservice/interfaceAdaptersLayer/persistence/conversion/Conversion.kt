@@ -19,7 +19,7 @@ fun DrivingFlowDataSourceModel.toResponseModel(): DrivingFlowResponseModel {
 		roadId!!,
 		idDirection!!,
 		numOfLanes!!,
-		roadCoordinates!!
+		roadCoordinates
 	)
 }
 
@@ -46,7 +46,7 @@ fun RoadRequestModel.toDataSourceModel(): RoadDataSourceModel {
  *
  */
 fun DrivingFlowResponseModel.toDataSourceModel(): DrivingFlowDataSourceModel {
-	val existingFlowId = ObjectId(flowId)
+	val existingFlowId = flowId
 	val roadToUpdate = DrivingFlowDataSourceModel(roadId, idDirection, numOfLanes, roadCoordinates)
 	roadToUpdate.id = existingFlowId
 	return roadToUpdate

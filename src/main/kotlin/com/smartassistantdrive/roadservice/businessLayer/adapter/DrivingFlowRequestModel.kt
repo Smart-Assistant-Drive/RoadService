@@ -24,5 +24,5 @@ data class DrivingFlowRequestModel(
 	/**
 	 * Array of coordinates of the flow.
 	 */
-	val roadCoordinates: ArrayList<Pair<Int, Int>>,
+	val roadCoordinates: ArrayList<Coordinate>,
 )

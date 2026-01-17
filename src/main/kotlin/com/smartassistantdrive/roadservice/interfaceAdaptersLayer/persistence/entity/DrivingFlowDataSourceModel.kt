@@ -1,6 +1,6 @@
 package com.smartassistantdrive.roadservice.interfaceAdaptersLayer.persistence.entity
 
-import org.bson.types.ObjectId
+import com.smartassistantdrive.roadservice.businessLayer.adapter.Coordinate
 import org.springframework.data.annotation.Id
 
 /**
@@ -10,14 +10,14 @@ class DrivingFlowDataSourceModel(
 	roadId: String,
 	idDirection: Int,
 	numOfLanes: Int,
-	roadCoordinates: ArrayList<Pair<Int, Int>>,
+	roadCoordinates: ArrayList<Coordinate>,
 ) {
 
 	/**
 	 *
 	 */
 	@Id
-	var id: ObjectId? = null
+	var id: String? = null
 
 	/**
 	 *
@@ -37,14 +37,14 @@ class DrivingFlowDataSourceModel(
 	/**
 	 *
 	 */
-	val roadCoordinates: ArrayList<Pair<Int, Int>>? = roadCoordinates
+	val roadCoordinates: ArrayList<Coordinate> = roadCoordinates
 
 	constructor(
-		idObj: ObjectId,
+		idObj: String,
 		roadId: String,
 		idDirection: Int,
 		numOfLanes: Int,
-		roadCoordinates: ArrayList<Pair<Int, Int>>,
+		roadCoordinates: ArrayList<Coordinate>,
 	) : this(roadId, idDirection, numOfLanes, roadCoordinates) {
 		this.id = idObj
 	}

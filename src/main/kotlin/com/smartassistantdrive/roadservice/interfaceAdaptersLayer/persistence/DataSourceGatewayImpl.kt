@@ -42,7 +42,7 @@ class DataSourceGatewayImpl(
 	}
 
 	override fun updateRoad(roadId: String, roadUpdateModel: RoadUpdateModel): Result<RoadResponseModel> {
-		val roadToUpdate = roadRepository.findByRoadId(ObjectId(roadId)).first()
+		val roadToUpdate = roadRepository.findByRoadId(roadId).first()
 		roadToUpdate.roadName = roadUpdateModel.roadName
 		roadToUpdate.roadNumber = roadUpdateModel.roadNumber
 		roadToUpdate.category = roadUpdateModel.category
@@ -51,7 +51,7 @@ class DataSourceGatewayImpl(
 	}
 
 	override fun removeRoad(roadId: String) {
-		roadRepository.removeByRoadId(ObjectId(roadId))
+		roadRepository.removeByRoadId(roadId)
 	}
 
 	override fun getAllRoadsByNumber(roadNumber: String): List<RoadResponseModel> {
@@ -71,7 +71,7 @@ class DataSourceGatewayImpl(
 	}
 
 	override fun getRoadById(roadId: String): Result<RoadResponseModel> {
-		val list = roadRepository.findByRoadId(ObjectId(roadId))
+		val list = roadRepository.findByRoadNumber(roadId)
 		list.stream().map {
 			it.toResponseModel()
 		}.findFirst().getOrNull()?.let {
@@ -81,8 +81,9 @@ class DataSourceGatewayImpl(
 	}
 
 	override fun addJunctionToRoad(roadId: String, junctionId: String): Result<RoadResponseModel> {
-		val roads = roadRepository.findByRoadId(ObjectId(roadId))
+		val roads = roadRepository.findByRoadNumber(roadId)
 		if (roads.isNotEmpty()) {
+			println("Adding junction to road....")
 			val road = roads.first()
 			road.junctions.addLast(junctionId)
 			roadRepository.save(road)
@@ -112,9 +113,9 @@ class DataSourceGatewayImpl(
 	}
 
 	override fun getDrivingFlow(flowId: String): Result<DrivingFlowResponseModel> {
-		val list = drivingFlowRepository.findById(ObjectId(flowId))
+		val list = drivingFlowRepository.findById(flowId)
 		list.stream().map {
-			it.toResponseModel()
+			it!!.toResponseModel()
 		}.findFirst().getOrNull()?.let {
 			return Result.success(it)
 		}
@@ -143,7 +144,7 @@ class DataSourceGatewayImpl(
 	}
 
 	override fun getRoadJunctions(roadId: String): List<JunctionResponseModel> {
-		return roadRepository.findByRoadId(ObjectId(roadId)).stream().findFirst().get().junctions.map {
+		return roadRepository.findByRoadNumber(roadId).stream().findFirst().get().junctions.map {
 			junctionRepository.findByJunctionId(ObjectId(it)).getOrNull()!!.toResponseModel()
 		}
 	}

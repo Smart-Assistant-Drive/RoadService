@@ -1,7 +1,6 @@
 package com.smartassistantdrive.roadservice.interfaceAdaptersLayer.persistence
 
 import com.smartassistantdrive.roadservice.interfaceAdaptersLayer.persistence.entity.RoadDataSourceModel
-import org.bson.types.ObjectId
 import org.springframework.data.mongodb.repository.MongoRepository
 
 /**
@@ -17,7 +16,7 @@ interface RoadRepository : MongoRepository<RoadDataSourceModel?, String?> {
 	/**
 	 *
 	 */
-	fun findByRoadId(roadId: ObjectId?): List<RoadDataSourceModel>
+	fun findByRoadId(roadId: String): List<RoadDataSourceModel>
 
 	/**
 	 *
@@ -27,5 +26,5 @@ interface RoadRepository : MongoRepository<RoadDataSourceModel?, String?> {
 	/**
 	 *
 	 */
-	fun removeByRoadId(roadId: ObjectId?)
+	fun removeByRoadId(roadId: String?)
 }

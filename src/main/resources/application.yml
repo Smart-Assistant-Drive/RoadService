@@ -6,8 +6,18 @@ spring:
   data:
     mongodb:
       authentication-database: admin
-      username: mongoadmin
+      username: root
       password: secret
       database: admin
       port: 27017
       host: localhost
+
+management:
+  endpoints:
+    web:
+      exposure:
+        include:
+          - prometheus
+  endpoint:
+    health:
+      show-details: always

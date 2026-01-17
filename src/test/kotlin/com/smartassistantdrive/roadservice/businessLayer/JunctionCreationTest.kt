@@ -4,6 +4,7 @@ import com.smartassistantdrive.roadservice.businessLayer.adapter.Coordinate
 import com.smartassistantdrive.roadservice.businessLayer.adapter.JunctionRequestModel
 import com.smartassistantdrive.roadservice.businessLayer.adapter.RoadRequestModel
 import com.smartassistantdrive.roadservice.domainLayer.JunctionType
+import com.smartassistantdrive.roadservice.domainLayer.OutgoingRoad
 import com.tngtech.archunit.thirdparty.com.google.common.collect.Lists
 import io.cucumber.java.en.Given
 import io.cucumber.java.en.Then
@@ -23,14 +24,14 @@ class JunctionCreationTest {
 	private val useCase: UseCase = UseCase(DataSourceGatewayMock().getDataSourceGateway()!!)
 
 	private lateinit var type: JunctionType
-	private lateinit var coordinates: Pair<Coordinate, Coordinate>
+	private lateinit var coordinates: Coordinate
 	private lateinit var id: String
 
 	@Given("a junction of type {string} with no outgoing roads, located in {int}, {int}")
 	fun given(type: String, xPos: Int, yPos: Int) {
 		val junctionType = JunctionType.valueOf(type)
 		this.type = junctionType
-		this.coordinates = Pair(Coordinate(xPos), Coordinate(yPos))
+		this.coordinates = Coordinate(xPos.toFloat(), yPos.toFloat())
 	}
 
 	@When("is created")
@@ -47,7 +48,7 @@ class JunctionCreationTest {
 			JunctionRequestModel(
 				junctionType = type.ordinal,
 				position = coordinates,
-				outgoingRoads = Lists.newArrayList(Pair(roadResponse.getOrNull()!!.roadId, 1))
+				outgoingRoads = Lists.newArrayList(OutgoingRoad(roadResponse.getOrNull()!!.roadId, 1))
 			)
 		)
 		if (result.isSuccess) {

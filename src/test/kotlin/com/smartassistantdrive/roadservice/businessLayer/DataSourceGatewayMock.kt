@@ -54,7 +54,7 @@ class DataSourceGatewayMock {
 			val junctionRequest = arg.arguments[0] as JunctionRequestModel
 			val hashMap = HashMap<RoadModel, Int>()
 			junctionRequest.outgoingRoads.forEach {
-				hashMap.put(dataSourceGateway.getRoadById(it.first).getOrNull()!!.toRoadModel(), it.second)
+				hashMap[dataSourceGateway.getRoadById(it.idRoad).getOrNull()!!.toRoadModel()] = it.direction
 			}
 			val junctionModel = JunctionModel.create(
 				EMPTY_ID,
@@ -73,8 +73,8 @@ class DataSourceGatewayMock {
 			val junction = dataSourceGateway.getJunctionById(junctionId)
 			val outgoingRoads = junction.getOrNull()!!.outgoingRoads.map {
 				Pair(
-					dataSourceGateway.getRoadById(it.first).getOrElse { error("Road not existing") }.toRoadModel(),
-					it.second
+					dataSourceGateway.getRoadById(it.idRoad).getOrElse { error("Road not existing") }.toRoadModel(),
+					it.direction
 				)
 			}.toCollection(ArrayList())
 			db.first { it.roadId == roadId }.junctions.add(

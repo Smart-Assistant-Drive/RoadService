@@ -31,6 +31,9 @@ dependencies {
 	implementation("org.springframework.boot:spring-boot-starter-aop")
 	implementation("org.springdoc:springdoc-openapi-starter-webmvc-ui:2.6.0")
 
+	// Source: https://mvnrepository.com/artifact/io.micrometer/micrometer-registry-prometheus
+	implementation("io.micrometer:micrometer-registry-prometheus")
+
 	testImplementation(libs.mockito.kotlin)
 	testImplementation(libs.archunit)
 	testImplementation(libs.bundles.cucmber.test)

@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.smartassistantdrive.roadservice.businessLayer.adapter.Coordinate
 import com.smartassistantdrive.roadservice.businessLayer.adapter.JunctionResponseModel
+import com.smartassistantdrive.roadservice.domainLayer.OutgoingRoad
 import org.springframework.hateoas.Link
 import org.springframework.hateoas.RepresentationModel
 
@@ -20,7 +21,7 @@ class JunctionResponseDto @JsonCreator constructor(
 	/**
 	 *
 	 */
-	@param:JsonProperty("outgoingRoads") val outgoingRoads: ArrayList<Pair<String, Int>>,
+	@param:JsonProperty("outgoingRoads") val outgoingRoads: ArrayList<OutgoingRoad>,
 
 	/**
 	 *
@@ -30,7 +31,7 @@ class JunctionResponseDto @JsonCreator constructor(
 	/**
 	 *
 	 */
-	@param:JsonProperty("position") val position: Pair<Coordinate, Coordinate>,
+	@param:JsonProperty("position") val position: Coordinate,
 ) : RepresentationModel<JunctionResponseDto>()
 
 /**

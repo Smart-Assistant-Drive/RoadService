@@ -26,7 +26,7 @@ interface JunctionModel {
 	/**
 	 *
 	 */
-	val position: Pair<Coordinate, Coordinate>
+	val position: Coordinate
 
 	/**
 	 * Companion object for Junction construction.
@@ -40,7 +40,7 @@ interface JunctionModel {
 			// outgoingRoads: ArrayList<RoadModel>,
 			outgoingRoads: HashMap<RoadModel, Int>,
 			junctionType: JunctionType,
-			position: Pair<Coordinate, Coordinate>,
+			position: Coordinate,
 		): JunctionModel {
 			return object : JunctionModel {
 				override val junctionId: String
@@ -49,7 +49,7 @@ interface JunctionModel {
 					get() = outgoingRoads
 				override val junctionType: JunctionType
 					get() = junctionType
-				override val position: Pair<Coordinate, Coordinate>
+				override val position: Coordinate
 					get() = position
 			}
 		}

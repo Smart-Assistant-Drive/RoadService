@@ -66,9 +66,9 @@ class UseCase(
 		return when {
 			junctionResponseModel != null -> {
 				junctionResponseModel.outgoingRoads.forEach {
-					val road = getRoad(it.first)
+					val road = getRoad(it.idRoad)
 					if (road.isSuccess) {
-						addJunctionToRoad(road.getOrNull()!!.toRoadModel().roadId, junctionResponseModel.junctionId)
+						addJunctionToRoad(it.idRoad, junctionResponseModel.junctionId)
 					} else {
 						return Result.failure(RoadNotFoundException())
 					}

@@ -2,6 +2,7 @@ package com.smartassistantdrive.roadservice.interfaceAdaptersLayer.controllers.d
 
 import com.fasterxml.jackson.annotation.JsonCreator
 import com.fasterxml.jackson.annotation.JsonProperty
+import com.smartassistantdrive.roadservice.businessLayer.adapter.Coordinate
 import com.smartassistantdrive.roadservice.businessLayer.adapter.DrivingFlowResponseModel
 import org.springframework.hateoas.Link
 import org.springframework.hateoas.RepresentationModel
@@ -33,7 +34,7 @@ class DrivingFlowResponseDto @JsonCreator constructor(
 	/**
 	 *
 	 */
-	@param:JsonProperty("coordinates") val coordinates: ArrayList<Pair<Int, Int>>,
+	@param:JsonProperty("coordinates") val coordinates: ArrayList<Coordinate>,
 
 ) : RepresentationModel<DrivingFlowResponseDto>()
 

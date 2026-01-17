@@ -1,6 +1,7 @@
 package com.smartassistantdrive.roadservice.interfaceAdaptersLayer.persistence.entity
 
 import com.smartassistantdrive.roadservice.businessLayer.adapter.Coordinate
+import com.smartassistantdrive.roadservice.domainLayer.OutgoingRoad
 import org.bson.types.ObjectId
 import org.springframework.data.annotation.Id
 
@@ -8,9 +9,9 @@ import org.springframework.data.annotation.Id
  *
  */
 class JunctionDataSourceModel(
-	outgoingRoads: ArrayList<Pair<String, Int>>,
+	outgoingRoads: ArrayList<OutgoingRoad>,
 	junctionType: Int,
-	position: Pair<Coordinate, Coordinate>,
+	position: Coordinate,
 ) {
 
 	/**
@@ -22,7 +23,7 @@ class JunctionDataSourceModel(
 	/**
 	 *
 	 */
-	val outgoingRoads: ArrayList<Pair<String, Int>> = outgoingRoads
+	val outgoingRoads: ArrayList<OutgoingRoad> = outgoingRoads
 
 	/**
 	 *
@@ -32,13 +33,13 @@ class JunctionDataSourceModel(
 	/**
 	 *
 	 */
-	var position: Pair<Coordinate, Coordinate> = position
+	var position: Coordinate = position
 
 	constructor(
 		junctionId: ObjectId,
-		outgoingRoads: ArrayList<Pair<String, Int>>,
+		outgoingRoads: ArrayList<OutgoingRoad>,
 		junctionType: Int,
-		position: Pair<Coordinate, Coordinate>,
+		position: Coordinate,
 	) : this(outgoingRoads, junctionType, position) {
 		this.junctionId = junctionId
 	}

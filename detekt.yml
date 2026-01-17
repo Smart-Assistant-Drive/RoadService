@@ -14,3 +14,5 @@ complexity:
   LongParameterList:
     functionThreshold: 10
     constructorThreshold: 10
+  LargeClass:
+    active: false

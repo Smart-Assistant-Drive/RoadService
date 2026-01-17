@@ -253,7 +253,7 @@ class RoadController(private val roadInput: RoadInputBoundary) {
 		responses = [
 			ApiResponse(
 				responseCode = "200",
-				description = "Road obtained successfully",
+				description = "Roads obtained successfully",
 				content = [
 					Content(
 						mediaType = "application/json",
@@ -262,13 +262,8 @@ class RoadController(private val roadInput: RoadInputBoundary) {
 				]
 			),
 			ApiResponse(
-				responseCode = "400",
-				description = "Invalid road, not existing",
-				content = [Content()]
-			),
-			ApiResponse(
 				responseCode = "404",
-				description = "Valid road not found",
+				description = "Valid roads not found",
 				content = [Content()]
 			),
 			ApiResponse(

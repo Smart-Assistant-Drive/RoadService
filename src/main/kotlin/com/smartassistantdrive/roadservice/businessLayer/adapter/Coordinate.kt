@@ -2,6 +2,5 @@ package com.smartassistantdrive.roadservice.businessLayer.adapter
 
 /**
  *	@param value: coordinate value.
- * TODO single value??
  */
-data class Coordinate(val value: Int)
+data class Coordinate(val x: Float, val y: Float)
