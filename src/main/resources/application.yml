@@ -18,6 +18,10 @@ management:
       exposure:
         include:
           - prometheus
+  tracing:
+    sampling:
+      probability: 1
+
   endpoint:
     health:
       show-details: always

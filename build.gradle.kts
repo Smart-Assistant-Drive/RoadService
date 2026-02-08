@@ -33,6 +33,9 @@ dependencies {
 
 	// Source: https://mvnrepository.com/artifact/io.micrometer/micrometer-registry-prometheus
 	implementation("io.micrometer:micrometer-registry-prometheus")
+	// zipkin
+	implementation("io.zipkin.reporter2:zipkin-reporter-brave")
+	implementation("io.micrometer:micrometer-tracing-bridge-brave")
 
 	testImplementation(libs.mockito.kotlin)
 	testImplementation(libs.archunit)
